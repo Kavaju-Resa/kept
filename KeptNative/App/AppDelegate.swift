@@ -11,6 +11,16 @@ extension Notification.Name {
 
 enum KeptWindowRole { case main, settings }
 
+enum QuitConfirmationPolicy {
+    static func shouldConfirmQuit(
+        confirmBeforeQuit: Bool,
+        alreadyConfirmed: Bool,
+        relaunchingForUpdate: Bool
+    ) -> Bool {
+        confirmBeforeQuit && !alreadyConfirmed && !relaunchingForUpdate
+    }
+}
+
 @MainActor
 final class WindowRegistry {
     static let shared = WindowRegistry()
@@ -70,10 +80,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         configureStatusItem()
+        DictationHotkeyMonitor.shared.start()
         NotificationCenter.default.addObserver(self, selector: #selector(windowVisibilityChanged), name: NSWindow.didMiniaturizeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowVisibilityChanged), name: NSWindow.willCloseNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowVisibilityChanged), name: NSWindow.didBecomeKeyNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowVisibilityChanged), name: NSWindow.didDeminiaturizeNotification, object: nil)
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        DictationHotkeyMonitor.shared.stop()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
@@ -84,7 +99,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard !quittingAfterConfirmation, AppSettings.shared.confirmBeforeQuit else { return .terminateNow }
+        guard QuitConfirmationPolicy.shouldConfirmQuit(
+            confirmBeforeQuit: AppSettings.shared.confirmBeforeQuit,
+            alreadyConfirmed: quittingAfterConfirmation,
+            relaunchingForUpdate: UpdateService.shared.isRelaunchingForUpdate
+        ) else { return .terminateNow }
         let alert = NSAlert()
         alert.alertStyle = .warning
         alert.messageText = "Quit Kept?"
