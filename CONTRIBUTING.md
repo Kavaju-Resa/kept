@@ -7,7 +7,9 @@ Thank you for helping improve Kept. The application code lives under
 
 - Apple Silicon Mac running macOS 26 or newer.
 - Xcode 26 or newer.
-- XcodeGen 2.44 or newer.
+- XcodeGen 2.46.0 (the version pinned in `Scripts/install-xcodegen.sh`; other
+  versions can generate a `Kept.xcodeproj` that differs from the committed one
+  and fail the CI project-verification step).
 
 Generate the project after changing `project.yml`:
 

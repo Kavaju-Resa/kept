@@ -266,7 +266,6 @@
 				};
 			};
 			buildConfigurationList = 5E4BEAD2D034A66D8E3704CB /* Build configuration list for PBXProject "Kept" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -279,6 +278,7 @@
 				2B12CBA09BD84D471DAC01A7 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 6E29B8DDF23BD2FA1D055A34 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
