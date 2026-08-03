@@ -1,0 +1,45 @@
+# Local tooling and agent state
+.agents/
+.claude/
+.codex/
+.mcp.json
+.env
+.env.*
+!.env.example
+
+# App icons (the native app intentionally tracks its .icns file only)
+app-icon.*
+!app-icon.icns
+.icon-hash
+
+# OS files
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Native build products
+DerivedData/
+.build/
+build/
+*.xcuserstate
+xcuserdata/
+
+# Signing, notarization, and credentials (never commit)
+*.cer
+*.crt
+*.der
+*.key
+*.keychain
+*.keychain-db
+*.mobileprovision
+*.p12
+*.pem
+*.pfx
+*.provisionprofile
+AuthKey_*.p8
+sparkle-private-key*
+notarytool-credentials*

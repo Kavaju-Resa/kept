@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+*.icns binary
+*.png binary
+*.xcassets/** text
+*.xcodeproj/** text
+*.zip binary
+*.dmg binary

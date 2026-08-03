@@ -1,0 +1,212 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify release source
+    runs-on: macos-26
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install XcodeGen when needed
+        run: command -v xcodegen >/dev/null || brew install xcodegen
+      - name: Verify version and generated project
+        run: |
+          ./Scripts/verify-release.sh "$GITHUB_REF_NAME"
+          xcodegen generate
+          git diff --exit-code -- Kept.xcodeproj
+      - name: Run tests
+        run: |
+          xcodebuild \
+            -project Kept.xcodeproj \
+            -scheme Kept \
+            -destination 'platform=macOS,arch=arm64' \
+            -clonedSourcePackagesDirPath build/SourcePackages \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
+  publish:
+    name: Sign, notarize, and publish
+    needs: verify
+    runs-on: macos-26
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout verified tag
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Validate required secrets
+        env:
+          DEVELOPER_CERTIFICATE: ${{ secrets.DEVELOPER_ID_APPLICATION_P12_BASE64 }}
+          DEVELOPER_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_APPLICATION_P12_PASSWORD }}
+          TEMPORARY_KEYCHAIN_PASSWORD: ${{ secrets.RELEASE_KEYCHAIN_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          NOTARY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          SPARKLE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          for value in \
+            "$DEVELOPER_CERTIFICATE" \
+            "$DEVELOPER_CERTIFICATE_PASSWORD" \
+            "$TEMPORARY_KEYCHAIN_PASSWORD" \
+            "$NOTARY_KEY" \
+            "$NOTARY_KEY_ID" \
+            "$NOTARY_ISSUER_ID" \
+            "$SPARKLE_KEY"; do
+              if [[ -z "$value" ]]; then
+                echo "Falta uno de los secretos requeridos del entorno release." >&2
+                exit 1
+              fi
+          done
+
+      - name: Install packaging tools
+        run: |
+          command -v xcodegen >/dev/null || brew install xcodegen
+          python3 -m venv "$RUNNER_TEMP/kept-python"
+          "$RUNNER_TEMP/kept-python/bin/pip" install --disable-pip-version-check dmgbuild==1.6.7
+          echo "$RUNNER_TEMP/kept-python/bin" >> "$GITHUB_PATH"
+
+      - name: Configure temporary signing keychain
+        env:
+          DEVELOPER_CERTIFICATE: ${{ secrets.DEVELOPER_ID_APPLICATION_P12_BASE64 }}
+          DEVELOPER_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_APPLICATION_P12_PASSWORD }}
+          TEMPORARY_KEYCHAIN_PASSWORD: ${{ secrets.RELEASE_KEYCHAIN_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          NOTARY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          SPARKLE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/kept-signing.keychain-db"
+          CERTIFICATE_PATH="$RUNNER_TEMP/developer-id.p12"
+          NOTARY_KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          SPARKLE_KEY_PATH="$RUNNER_TEMP/sparkle-private-key"
+
+          printf '%s' "$DEVELOPER_CERTIFICATE" | base64 --decode > "$CERTIFICATE_PATH"
+          printf '%s' "$NOTARY_KEY" | base64 --decode > "$NOTARY_KEY_PATH"
+          printf '%s' "$SPARKLE_KEY" > "$SPARKLE_KEY_PATH"
+          chmod 600 "$CERTIFICATE_PATH" "$NOTARY_KEY_PATH" "$SPARKLE_KEY_PATH"
+
+          security create-keychain -p "$TEMPORARY_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$TEMPORARY_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" \
+            -P "$DEVELOPER_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -s \
+            -k "$TEMPORARY_KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          security default-keychain -d user -s "$KEYCHAIN_PATH"
+
+          xcrun notarytool store-credentials kept-notary \
+            --key "$NOTARY_KEY_PATH" \
+            --key-id "$NOTARY_KEY_ID" \
+            --issuer "$NOTARY_ISSUER_ID" \
+            --keychain "$KEYCHAIN_PATH" \
+            --validate
+
+          xcodegen generate
+          xcodebuild \
+            -resolvePackageDependencies \
+            -project Kept.xcodeproj \
+            -scheme Kept \
+            -clonedSourcePackagesDirPath build/SourcePackages
+          build/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_keys \
+            --account com.kavaju.kept \
+            -f "$SPARKLE_KEY_PATH"
+
+      - name: Configure public update URLs
+        env:
+          CONFIGURED_FEED_URL: ${{ vars.KEPT_UPDATE_FEED_URL }}
+          CONFIGURED_BASE_URL: ${{ vars.KEPT_UPDATE_BASE_URL }}
+        run: |
+          OWNER="$(printf '%s' "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          REPOSITORY_NAME="${GITHUB_REPOSITORY#*/}"
+          DEFAULT_BASE_URL="https://${OWNER}.github.io/${REPOSITORY_NAME}/"
+          UPDATE_BASE_URL="${CONFIGURED_BASE_URL:-$DEFAULT_BASE_URL}"
+          UPDATE_FEED_URL="${CONFIGURED_FEED_URL:-${UPDATE_BASE_URL}appcast.xml}"
+          echo "KEPT_UPDATE_BASE_URL=$UPDATE_BASE_URL" >> "$GITHUB_ENV"
+          echo "KEPT_UPDATE_FEED_URL=$UPDATE_FEED_URL" >> "$GITHUB_ENV"
+
+      - name: Build signed and notarized packages
+        env:
+          KEPT_CODE_SIGN_IDENTITY: Developer ID Application
+          KEPT_HARDENED_RUNTIME: YES
+          KEPT_NOTARY_PROFILE: kept-notary
+          KEPT_NOTARY_KEYCHAIN: ${{ runner.temp }}/kept-signing.keychain-db
+          KEPT_PUBLISH_LOCAL_FEED: NO
+        run: ./Scripts/package-dmg.sh
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' KeptNative/Resources/Info.plist)"
+          NOTES="ReleaseNotes/${VERSION}.md"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" \
+              build/distribution/Instalar-Kept-"$VERSION".dmg \
+              build/distribution/Kept-"$VERSION"-macOS-Apple-Silicon.zip \
+              --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              build/distribution/Instalar-Kept-"$VERSION".dmg \
+              build/distribution/Kept-"$VERSION"-macOS-Apple-Silicon.zip \
+              --verify-tag \
+              --title "Kept $VERSION" \
+              --notes-file "$NOTES"
+          fi
+
+      - name: Upload update feed for GitHub Pages
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: build/updates
+
+      - name: Remove temporary signing material
+        if: always()
+        env:
+          TEMPORARY_KEYCHAIN_PASSWORD: ${{ secrets.RELEASE_KEYCHAIN_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/kept-signing.keychain-db"
+          if [[ -f "$KEYCHAIN_PATH" ]]; then
+            security delete-keychain "$KEYCHAIN_PATH" || true
+          fi
+          rm -f \
+            "$RUNNER_TEMP/developer-id.p12" \
+            "$RUNNER_TEMP/AuthKey.p8" \
+            "$RUNNER_TEMP/sparkle-private-key"
+
+  deploy-feed:
+    name: Deploy update feed
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

@@ -1,0 +1,53 @@
+name: Kept
+options:
+  bundleIdPrefix: com.kavaju
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.9.5
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "26.0"
+    ARCHS: arm64
+    ONLY_ACTIVE_ARCH: YES
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    ENABLE_APP_SANDBOX: NO
+    KEPT_UPDATE_FEED_URL: ""
+targets:
+  Kept:
+    type: application
+    platform: macOS
+    sources:
+      - path: KeptNative
+        excludes:
+          - Resources/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kavaju.kept
+        PRODUCT_NAME: Kept
+        INFOPLIST_FILE: KeptNative/Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies:
+      - package: Sparkle
+    scheme:
+      testTargets:
+        - KeptTests
+  KeptTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: KeptTests
+    dependencies:
+      - target: Kept
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kavaju.kept.tests
+        GENERATE_INFOPLIST_FILE: YES
