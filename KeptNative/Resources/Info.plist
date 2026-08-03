@@ -2,32 +2,56 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleDevelopmentRegion</key><string>$(DEVELOPMENT_LANGUAGE)</string>
-  <key>CFBundleExecutable</key><string>$(EXECUTABLE_NAME)</string>
-  <key>CFBundleIconName</key><string>AppIcon</string>
-  <key>CFBundleIdentifier</key><string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-  <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-  <key>CFBundleName</key><string>$(PRODUCT_NAME)</string>
-  <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.1.1</string>
-  <key>CFBundleVersion</key><string>4</string>
-  <key>KeptUpdateFeedURL</key><string>$(KEPT_UPDATE_FEED_URL)</string>
-  <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
-  <key>LSMinimumSystemVersion</key><string>26.0</string>
-  <key>LSUIElement</key><true/>
-  <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Kavaju</string>
-  <key>NSMicrophoneUsageDescription</key><string>Kept usa el micrófono para dictar mensajes.</string>
-  <key>NSAppTransportSecurity</key>
-  <dict>
-    <key>NSAllowsLocalNetworking</key><true/>
-  </dict>
-  <key>NSSpeechRecognitionUsageDescription</key><string>Kept transcribe el dictado local en el chat.</string>
-  <key>NSSupportsAutomaticTermination</key><false/>
-  <key>NSSupportsSuddenTermination</key><false/>
-  <key>SUAllowsAutomaticUpdates</key><true/>
-  <key>SUEnableAutomaticChecks</key><true/>
-  <key>SUEnableSystemProfiling</key><false/>
-  <key>SUPublicEDKey</key><string>RwXeJClFUeZpcFqto89em8qaOEt6g1Ob1a0EA0zkWHY=</string>
-  <key>SUScheduledCheckInterval</key><integer>86400</integer>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1.2</string>
+	<key>CFBundleVersion</key>
+	<string>5</string>
+	<key>KeptUpdateFeedURL</key>
+	<string>$(KEPT_UPDATE_FEED_URL)</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Kavaju</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Kept usa el micrófono para dictar mensajes.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Kept transcribe el dictado local en el chat.</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUPublicEDKey</key>
+	<string>RwXeJClFUeZpcFqto89em8qaOEt6g1Ob1a0EA0zkWHY=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>
