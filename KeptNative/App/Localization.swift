@@ -10,6 +10,14 @@ struct Copy {
     var memory: String { isSpanish ? "Memorias" : "Memories" }
     var tasks: String { isSpanish ? "Tareas" : "Tasks" }
     var placeholder: String { isSpanish ? "Escribe algo para recordar…" : "Write something to remember…" }
+    var translationPlaceholder: String { isSpanish ? "Escribe el texto que quieres traducir…" : "Write the text you want to translate…" }
+    var translationMode: String { isSpanish ? "Modo traducción" : "Translation mode" }
+    var translating: String { isSpanish ? "Traduciendo…" : "Translating…" }
+    var sourceLanguage: String { isSpanish ? "Idioma de origen" : "Source language" }
+    var targetLanguage: String { isSpanish ? "Idioma de salida" : "Target language" }
+    var textStyle: String { isSpanish ? "Estilo de texto" : "Text style" }
+    var exitTranslation: String { isSpanish ? "Salir del modo traducción" : "Exit translation mode" }
+    var copyTranslation: String { isSpanish ? "Copiar traducción" : "Copy translation" }
     var noMessages: String { isSpanish ? "Cuéntame qué necesitas recordar." : "Tell me what you need to remember." }
     var noTasks: String { isSpanish ? "No hay tareas pendientes" : "No pending tasks" }
     var noMemories: String { isSpanish ? "Aún no hay recuerdos" : "No memories yet" }

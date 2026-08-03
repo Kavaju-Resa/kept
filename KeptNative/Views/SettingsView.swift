@@ -176,7 +176,23 @@ struct SettingsView: View {
                 Text("Español").tag("es-ES")
                 Text("English").tag("en-US")
             }
-            Text(copy.language == "es" ? "Mantén el botón del micrófono en Chat para hablar." : "Use the microphone button in Chat to speak.")
+            Picker(
+                copy.language == "es" ? "Tecla para mantener y dictar" : "Hold-to-dictate key",
+                selection: Binding(
+                    get: { settings.dictationHotkey },
+                    set: {
+                        settings.dictationHotkey = $0
+                        DictationHotkeyMonitor.shared.configurationDidChange()
+                    }
+                )
+            ) {
+                ForEach(DictationHotkey.allCases) { hotkey in
+                    Text(hotkey.displayName(language: copy.language)).tag(hotkey.rawValue)
+                }
+            }
+            Text(copy.language == "es"
+                 ? "Mantén pulsada la tecla elegida para dictar en Chat y suéltala para terminar. Funciona mientras Kept esté abierto."
+                 : "Hold the selected key to dictate in Chat and release it to stop. It works while Kept is running.")
                 .font(.caption).foregroundStyle(.secondary)
         }
     }

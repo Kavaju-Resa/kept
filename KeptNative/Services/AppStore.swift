@@ -98,6 +98,31 @@ final class AppStore {
         }
     }
 
+    func translate(_ rawText: String, request: TranslationRequest) async {
+        let text = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !isThinking else { return }
+        let interfaceLanguage = resolvedCopy(settings).language
+        context.insert(ConversationMessage(role: "user", text: text, kind: "translation-source"))
+        try? context.save()
+
+        guard case .available = assistantAvailability else {
+            appendAssistant(interfaceLanguage == "es"
+                ? "Apple Intelligence no está disponible para traducir ahora."
+                : "Apple Intelligence isn't available to translate right now.")
+            return
+        }
+
+        isThinking = true
+        defer { isThinking = false }
+        do {
+            let translation = try await assistant.translate(text, request: request)
+            guard !translation.isEmpty else { throw AssistantService.AssistantError.emptyResponse }
+            appendAssistant(translation, kind: "translation")
+        } catch {
+            appendAssistant(translationErrorMessage(for: error, language: interfaceLanguage))
+        }
+    }
+
     func confirmPending() async {
         let actions = pendingActions
         pendingActions = []
@@ -337,10 +362,33 @@ final class AppStore {
         }
     }
 
+    private func translationErrorMessage(for error: Error, language: String) -> String {
+        let spanish = language.hasPrefix("es")
+        if let generationError = error as? LanguageModelSession.GenerationError {
+            switch generationError {
+            case .unsupportedLanguageOrLocale(_):
+                return spanish
+                    ? "Apple Intelligence no admite esta combinación de idiomas. Prueba con otra."
+                    : "Apple Intelligence doesn't support this language combination. Try another one."
+            case .guardrailViolation(_), .refusal(_, _):
+                return spanish
+                    ? "Apple Intelligence no pudo traducir este texto."
+                    : "Apple Intelligence couldn't translate this text."
+            default:
+                break
+            }
+        }
+        return spanish
+            ? "No pude completar la traducción por un fallo local. Inténtalo de nuevo."
+            : "I couldn't complete the translation because of a local error. Please try again."
+    }
+
     private func makeSnapshot(language: String) -> AssistantSnapshot {
         let reminders = (try? context.fetch(FetchDescriptor<ReminderItem>())) ?? []
         let memories = (try? context.fetch(FetchDescriptor<MemoryItem>())) ?? []
-        let messages = ((try? context.fetch(FetchDescriptor<ConversationMessage>(sortBy: [SortDescriptor(\.createdAt)]))) ?? []).suffix(12)
+        let messages = ((try? context.fetch(FetchDescriptor<ConversationMessage>(sortBy: [SortDescriptor(\.createdAt)]))) ?? [])
+            .filter { !$0.kindRaw.hasPrefix("translation") }
+            .suffix(12)
         let records = reminders.map {
             AssistantSnapshot.Record(id: $0.id, kind: "reminder", title: $0.title, detail: "status=\($0.statusRaw), recurrence=\($0.recurrenceRaw)", date: $0.eventAt)
         } + memories.filter { $0.kindRaw == "log" }.map {
