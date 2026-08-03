@@ -22,15 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: CLA Assistant
-        uses: contributor-assistant/github-action@v2.6.1
+        uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path-to-signatures: signatures/cla.json
           path-to-document: https://github.com/Kavaju-Resa/kept/blob/main/CONTRIBUTOR_LICENSE_AGREEMENT.md
           branch: cla-signatures
-          allowlist: dependabot[bot]
-          custom-notsigned-comment: >
+          allowlist: Kavaju-Resa,dependabot[bot]
+          custom-notsigned-prcomment: >
             Thank you for your contribution. Before it can be merged, please
             read the [Contributor License Agreement](https://github.com/Kavaju-Resa/kept/blob/main/CONTRIBUTOR_LICENSE_AGREEMENT.md)
             and sign it by posting the comment below.
