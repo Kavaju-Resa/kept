@@ -5,8 +5,10 @@ you intentionally submit to Kept. "Project Owner" means the Kept copyright
 holder identified in this repository. "Contribution" means source code,
 documentation, artwork, or other material you submit for inclusion in Kept.
 
-By stating your acceptance in a pull request and submitting a Contribution, you
-agree to the following:
+Acceptance is recorded by the CLA workflow: when you open your first pull
+request, a bot asks you to sign by posting the exact comment it indicates, and
+the signature is stored in the `cla-signatures` branch of this repository. By
+signing and submitting a Contribution, you agree to the following:
 
 1. **Copyright license.** You grant the Project Owner and recipients of software
    distributed by the Project Owner a perpetual, worldwide, non-exclusive,

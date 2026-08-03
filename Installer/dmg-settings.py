@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (C) 2026 Kavaju
+
 application = defines["application"]
 background_art = defines["background"]
 volume_icon = defines["volume_icon"]

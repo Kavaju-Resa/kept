@@ -1,13 +1,33 @@
-Kept
+Kept — a private, local macOS reminder and memory assistant.
 Copyright (C) 2026 Kavaju
 
 Except for third-party components identified in THIRD_PARTY_NOTICES.md, the
 source code and documentation in this repository are licensed under the GNU
 Affero General Public License, version 3 only (AGPL-3.0-only).
 
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, version 3 of the License only.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+details.
+
+You should have received a copy of the GNU Affero General Public License along
+with this program in the LICENSE file. If not, see
+<https://www.gnu.org/licenses/>.
+
+Source code: https://github.com/Kavaju-Resa/kept
+Contact: the contact method published on the Kavaju GitHub organization
+profile (https://github.com/Kavaju-Resa).
+
 Alternative commercial licensing may be available under a separate written
 agreement. COMMERCIAL-LICENSING.md describes that option but does not itself
-grant additional rights.
+grant additional rights. Official binaries distributed by the copyright holder
+through channels whose terms are incompatible with the AGPL (for example, a
+future Mac App Store release) are licensed separately under the commercial
+alternative; this does not change the license of this repository.
 
 The Kept and Kavaju names, logos, and other brand identifiers are not licensed
 under the GNU AGPL. See TRADEMARKS.md.

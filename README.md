@@ -120,8 +120,9 @@ Kept is offered under two alternatives:
    with one over a network, you must comply with the AGPL source-availability
    requirements.
 2. **Commercial license:** separate proprietary terms may be obtained from the
-   project owner for uses where the AGPL is unsuitable. See
-   [`COMMERCIAL-LICENSING.md`](COMMERCIAL-LICENSING.md).
+   project owner for uses where the AGPL is unsuitable — including distribution
+   through channels whose terms conflict with the AGPL, such as the Mac App
+   Store. See [`COMMERCIAL-LICENSING.md`](COMMERCIAL-LICENSING.md).
 
 The Kept and Kavaju names, logos, and visual identity are not granted under the
 software license. See [`TRADEMARKS.md`](TRADEMARKS.md). Contributions require

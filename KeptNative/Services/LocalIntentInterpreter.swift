@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 Kavaju
+
 import Foundation
 
 /// A deliberately narrow, deterministic fast path for unequivocal reminder phrases.

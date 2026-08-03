@@ -33,9 +33,11 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
    containing reminders, certificates, provisioning profiles, or credentials.
 3. Run `./Scripts/audit-secrets.sh` and the test suite before opening a PR.
 4. Explain user-visible changes and any manual macOS checks still required.
-5. Read and accept the
-   [`CONTRIBUTOR_LICENSE_AGREEMENT.md`](CONTRIBUTOR_LICENSE_AGREEMENT.md) in the
-   pull-request template. Do not submit code you are not authorized to license.
+5. Read the
+   [`CONTRIBUTOR_LICENSE_AGREEMENT.md`](CONTRIBUTOR_LICENSE_AGREEMENT.md). On
+   your first pull request, the CLA workflow will ask you to sign it with a
+   comment; the pull request cannot be merged until every contributor has
+   signed. Do not submit code you are not authorized to license.
 
 Pull requests from forks never receive release credentials. Maintainers publish
 releases only from protected version tags.

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 Kavaju
+
 import FoundationModels
 import SwiftData
 import SwiftUI
@@ -271,18 +274,38 @@ struct SettingsView: View {
 
     private func about(copy: Copy) -> some View {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
-        return VStack(spacing: 14) {
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable().scaledToFit().frame(width: 92, height: 92)
-                .shadow(color: .black.opacity(0.22), radius: 16, y: 8)
-            Text("Kept").font(.title2.weight(.semibold))
-            Text(version).foregroundStyle(.secondary)
-            Text(copy.language == "es" ? "Tu memoria, descargada. Privada y local." : "Your memory, offloaded. Private and local.")
-                .multilineTextAlignment(.center).foregroundStyle(.secondary)
+        let copyright = Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String ?? "Copyright © 2026 Kavaju"
+        return VStack(alignment: .leading, spacing: 22) {
+            VStack(spacing: 14) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable().scaledToFit().frame(width: 92, height: 92)
+                    .shadow(color: .black.opacity(0.22), radius: 16, y: 8)
+                Text("Kept").font(.title2.weight(.semibold))
+                Text(version).foregroundStyle(.secondary)
+                Text(copy.language == "es" ? "Tu memoria, descargada. Privada y local." : "Your memory, offloaded. Private and local.")
+                    .multilineTextAlignment(.center).foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .keptCard(padding: 34)
+            .padding(.top, 30)
+
+            group(copy.language == "es" ? "Licencia" : "License") {
+                Text(copyright)
+                    .font(.caption)
+                Text(copy.language == "es"
+                    ? "Kept es software libre: puedes redistribuirlo y modificarlo bajo la Licencia Pública General Affero de GNU, versión 3. Se distribuye SIN NINGUNA GARANTÍA, ni siquiera la garantía implícita de comerciabilidad o idoneidad para un fin determinado. Consulta la licencia para más detalles."
+                    : "Kept is free software: you can redistribute it and modify it under the GNU Affero General Public License, version 3. It is distributed WITHOUT ANY WARRANTY; without even the implied warranty of merchantability or fitness for a particular purpose. See the license for details.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 12) {
+                    Link(copy.language == "es" ? "Código fuente" : "Source code",
+                         destination: URL(string: "https://github.com/Kavaju-Resa/kept")!)
+                    Link(copy.language == "es" ? "Licencia (AGPL-3.0-only)" : "License (AGPL-3.0-only)",
+                         destination: URL(string: "https://github.com/Kavaju-Resa/kept/blob/main/LICENSE")!)
+                }
+                .font(.caption)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .keptCard(padding: 34)
-        .padding(.top, 30)
     }
 
     private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {

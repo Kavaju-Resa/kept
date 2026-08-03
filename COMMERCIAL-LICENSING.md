@@ -8,6 +8,14 @@ by the project owner to individuals or organizations that want, for example,
 to distribute Kept or incorporate it into a proprietary product without the
 AGPL obligations.
 
+The commercial alternative also covers official distribution channels whose
+terms are incompatible with the AGPL. In particular, if the project owner
+publishes Kept on the Mac App Store in the future, that binary will be
+distributed under the commercial license by the copyright holder (as permitted
+by sole ownership plus the contributor agreement), while this repository
+remains AGPL-3.0-only. Third parties may not distribute Kept through such
+channels without a commercial license.
+
 Commercial terms, pricing, support, warranties, and permitted uses are agreed
 in a separate written contract. **This document is informational and does not
 itself grant a commercial license or any additional rights.** Until such a
