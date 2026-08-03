@@ -201,6 +201,7 @@ final class UpdateService: NSObject, ObservableObject, SPUUpdaterDelegate {
     @Published private(set) var activeFeedURL: URL?
     @Published private(set) var customFeedURLString = ""
     @Published private(set) var configurationError: String?
+    private(set) var isRelaunchingForUpdate = false
 
     private let defaults = UserDefaults.standard
     private let customFeedKey = "customUpdateFeedURL"
@@ -361,5 +362,13 @@ final class UpdateService: NSObject, ObservableObject, SPUUpdaterDelegate {
 
     func feedURLString(for updater: SPUUpdater) -> String? {
         activeFeedURL?.absoluteString
+    }
+
+    func updaterWillRelaunchApplication(_ updater: SPUUpdater) {
+        isRelaunchingForUpdate = true
+    }
+
+    func updater(_ updater: SPUUpdater, didAbortWithError error: Error) {
+        isRelaunchingForUpdate = false
     }
 }

@@ -38,6 +38,7 @@
 		C1D3C5E0C900BE42754FC21A /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A28694D0E47AB5986235345D /* UpdateService.swift */; };
 		D082996C3BB54B2E6E9BDAF3 /* ScheduleEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA5ADECF1A21BBA9E8D3BB /* ScheduleEnums.swift */; };
 		DBFA9D0EAF66F0514DD8ED93 /* AssistantService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C1D5C5064C24E6CC48E7B /* AssistantService.swift */; };
+		DEE6140DB41155D459A42021 /* QuitConfirmationPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834AC48E216F62E1D6330897 /* QuitConfirmationPolicyTests.swift */; };
 		E497D82D2BDB3ED50700C4CF /* ActionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1962A05099EE290ED9D93A7 /* ActionValidatorTests.swift */; };
 		E68F2299FE966EFA8AD19379 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7A29DFC3501A9B288DC35 /* ChatView.swift */; };
 /* End PBXBuildFile section */
@@ -68,6 +69,7 @@
 		7D4C1D5C5064C24E6CC48E7B /* AssistantService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantService.swift; sourceTree = "<group>"; };
 		80827921AB0E88A4CAAA8178 /* LocalUpdateHTTPServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUpdateHTTPServerTests.swift; sourceTree = "<group>"; };
 		80BB9DEC0CA5DE3A51F93F75 /* PromptCorpusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptCorpusTests.swift; sourceTree = "<group>"; };
+		834AC48E216F62E1D6330897 /* QuitConfirmationPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuitConfirmationPolicyTests.swift; sourceTree = "<group>"; };
 		8368A2131271A564B0C343C9 /* ChatRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRing.swift; sourceTree = "<group>"; };
 		85E06CAA695C83D5745C73BB /* DictationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationService.swift; sourceTree = "<group>"; };
 		8E3C64C87BA8C78A991FBA64 /* MemoryTimelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryTimelineTests.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				8E3C64C87BA8C78A991FBA64 /* MemoryTimelineTests.swift */,
 				0DA7D7A336BA8CD066787D3B /* PatternServiceTests.swift */,
 				80BB9DEC0CA5DE3A51F93F75 /* PromptCorpusTests.swift */,
+				834AC48E216F62E1D6330897 /* QuitConfirmationPolicyTests.swift */,
 				C88B5E740A6467A52E9E0561 /* ReminderScheduleInputTests.swift */,
 				11A443D6D5EC807BCE21ECBA /* TemporalResolverTests.swift */,
 				ECA999D54AB73BD18D064969 /* UpdateFeedLocatorTests.swift */,
@@ -339,6 +342,7 @@
 				0ADFD1EE9EAF62E4A5F2DD2F /* MemoryTimelineTests.swift in Sources */,
 				9097BFB724D4D18E64896E95 /* PatternServiceTests.swift in Sources */,
 				08993220D9C2E0C71C297E1E /* PromptCorpusTests.swift in Sources */,
+				DEE6140DB41155D459A42021 /* QuitConfirmationPolicyTests.swift in Sources */,
 				9EFDC56B9FBB99A70012B595 /* ReminderScheduleInputTests.swift in Sources */,
 				55A890B7B9101F32103EAB33 /* TemporalResolverTests.swift in Sources */,
 				5AA6D6EC3C956E56495502A6 /* UpdateFeedLocatorTests.swift in Sources */,
