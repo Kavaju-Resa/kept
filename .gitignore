@@ -3,6 +3,8 @@
 .claude/
 .codex/
 .mcp.json
+AGENTS.md
+CLAUDE.md
 .env
 .env.*
 !.env.example
