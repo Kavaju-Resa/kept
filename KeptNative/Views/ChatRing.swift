@@ -5,12 +5,15 @@ import SwiftUI
 
 struct ChatRing: View {
     var active: Bool
+    var diameter: CGFloat = 116
 
     var body: some View {
+        let scale = diameter / 116
+
         ZStack {
             Circle()
                 .fill(Color.accentColor.opacity(active ? 0.16 : 0.08))
-                .frame(width: 88, height: 88)
+                .frame(width: 88 * scale, height: 88 * scale)
                 .glassEffect(.regular, in: .circle)
 
             TimelineView(.animation(minimumInterval: 1 / 30)) { timeline in
@@ -22,7 +25,7 @@ struct ChatRing: View {
                     let points = 64
                     for index in 0...points {
                         let angle = Double(index) / Double(points) * .pi * 2
-                        let wobble = active ? 0.5 : 2.4
+                        let wobble = (active ? 0.5 : 2.4) * scale
                         let radial = radius + wobble * sin(angle * 3 + phase) + wobble * 0.45 * sin(angle * 2 - phase * 1.3)
                         let point = CGPoint(x: center.x + radial * cos(angle), y: center.y + radial * sin(angle))
                         index == 0 ? path.move(to: point) : path.addLine(to: point)
@@ -34,12 +37,12 @@ struct ChatRing: View {
                             startPoint: .zero,
                             endPoint: CGPoint(x: size.width, y: size.height)
                         ),
-                        lineWidth: 4
+                        lineWidth: 4 * scale
                     )
                 }
             }
         }
-        .frame(width: 116, height: 116)
+        .frame(width: diameter, height: diameter)
         .scaleEffect(active ? 1.035 : 1)
         .animation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true), value: active)
         .accessibilityHidden(true)

@@ -162,6 +162,13 @@ actor AssistantService {
         return assignments
     }
 
+    func translate(_ text: String, request: TranslationRequest) async throws -> String {
+        guard case .available = availability() else { throw AssistantError.unavailable }
+        let translator = LanguageModelSession(instructions: request.instructions)
+        let response = try await translator.respond(to: Prompt(request.prompt(for: text)))
+        return response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private func makeSession(tool: SearchKeptTool) -> LanguageModelSession {
         LanguageModelSession(tools: [tool], instructions: """
         You are Kept, a private on-device personal reminder and memory assistant for macOS.
@@ -208,5 +215,6 @@ actor AssistantService {
 
     enum AssistantError: Error {
         case unavailable
+        case emptyResponse
     }
 }
